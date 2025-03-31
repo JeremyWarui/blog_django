@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Blog Homepage</h1>
+  <p>
+    Welcome to the Blog, a platform to share your thoughts and ideas!
+  </p>
+  <h2>Dynamic Content</h2>
+  <p>The blog currently has the following record counts:</p>
+  <ul>
+    <li><strong>Total Blogs:</strong> {{ num_of_blogs }}</li>
+    <li><strong>Total Authors:</strong> {{ num_of_authors }}</li>
+    <li><strong>Total Comments:</strong> {{ num_of_comments }}</li>
+  </ul>
+{% endblock %}

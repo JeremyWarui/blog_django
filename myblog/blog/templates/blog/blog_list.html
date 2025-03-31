@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Blog List</h1>
+{% if blogs %}
+<ul>
+    {% for blog in blogs %}
+    <li>
+        <a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a>
+        ({{ blog.post_date|date:"F j, Y" }}) ---
+        <a href="{% url 'author_detail' blog.author.id %}">{{ blog.author.user_name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>There are no blogs available.</p>
+{% endif %}
+{% endblock %}
