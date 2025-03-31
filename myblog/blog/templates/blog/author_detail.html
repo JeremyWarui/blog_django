@@ -2,13 +2,13 @@
 
 {% block content %}
 <div>
-    <h2>Blogger: {{ author.user_name }}</h2>
+    <h2>Blogger: {{ author.username }}</h2>
     <h3>Bio</h3>
     <p>{{ author.bio }}</p>
-    <h3>Blogs by {{ author.user_name }}</h3>
-    {% if author.blog_set.all %}
+    <h3>Blogs by {{ author.username }}</h3>
+    {% if author.blogs.all %}
     <ul>
-        {% for blog in author.blog_set.all %}
+        {% for blog in author.blogs.all %}
         <li>
             <a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a>
             ({{ blog.post_date|date:"F j, Y" }})

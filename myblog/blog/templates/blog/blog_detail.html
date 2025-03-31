@@ -16,8 +16,10 @@
         <strong>{{ comment.author }}</strong> ({{ comment.posted_at|date:"F j, Y, g:i a" }}) - <span>{{ comment.description }}</span>
     </li>
     {% endfor %}
+    <a href="{% url 'new_comment' blog.id %}">Add a comment</a>
 </ul>
 {% else %}
 <p>No comments yet. Be the first to comment!</p>
+<a href="{% url 'new_comment' blog.id %}">Add a comment</a>
 {% endif %}
 {% endblock %}

@@ -23,13 +23,13 @@ class BlogAdmin(admin.ModelAdmin):
     inlines = [CommentsInline]
 
 
-# class CommentAdmin(admin.ModelAdmin):
-#     list_display = ('blog', 'posted_at', 'author')
-#     list_filter = ('posted_at',)
-#     fields = ('blog', 'posted_at', 'author', 'description')
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('blog', 'posted_at', 'author')
+    list_filter = ('posted_at',)
+    fields = ('blog', 'posted_at', 'author', 'description')
 
 # Register the models
 
 admin.site.register(Blog, BlogAdmin)
-admin.site.register(Comment)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(Author, AuthorAdmin)

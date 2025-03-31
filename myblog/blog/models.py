@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 # Create your models here.
@@ -27,7 +28,9 @@ class Author(models.Model):
 class Blog(models.Model):
     """Blog model showing the details of the blog"""
     title = models.CharField(max_length=100)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    # Use User model directly
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='blogs')
     content = models.TextField()
     post_date = models.DateTimeField(auto_now_add=True)
 
@@ -37,7 +40,7 @@ class Blog(models.Model):
 
     def __str__(self):
         """returns string representation of the model"""
-        return f'{self.title} by {self.author}'
+        return f'{self.title} by {self.author.username}'
 
     def get_absolute_url(self):
         """returns the url to access a particular blog instance"""
@@ -48,7 +51,7 @@ class Comment(models.Model):
     """Comment model showing the details of the comment"""
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     posted_at = models.DateTimeField(auto_now_add=True)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(max_length=200)
 
     class Meta:
