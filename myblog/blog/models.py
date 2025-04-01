@@ -1,24 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from datetime import date
 
 # Create your models here.
 
 
 class Author(models.Model):
     """Author model showing the details of the author"""
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    user_name = models.CharField(max_length=100)
-    bio = models.TextField(max_length=200)
+    name = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+    bio = models.TextField(
+        max_length=200, help_text='Enter a short bio about the author')
 
     class Meta:
         """default ordering of the author details"""
-        ordering = ['last_name', 'first_name']
+        ordering = ['name']
 
     def __str__(self):
         """returns string representation of the model"""
-        return f'{self.last_name}, {self.first_name}'
+        return f'{self.name.username}'
 
     def get_absolute_url(self):
         """returns the url to access a particular author instance"""
@@ -30,9 +30,10 @@ class Blog(models.Model):
     title = models.CharField(max_length=100)
     # Use User model directly
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='blogs')
-    content = models.TextField()
-    post_date = models.DateTimeField(auto_now_add=True)
+        Author, on_delete=models.SET_NULL, null=True)
+    content = models.TextField(
+        max_length=2000, help_text='Enter the blog content')
+    post_date = models.DateField(default=date.today)
 
     class Meta:
         """default ordering of the blog details"""
@@ -40,7 +41,7 @@ class Blog(models.Model):
 
     def __str__(self):
         """returns string representation of the model"""
-        return f'{self.title} by {self.author.username}'
+        return f'{self.title}'
 
     def get_absolute_url(self):
         """returns the url to access a particular blog instance"""
@@ -50,13 +51,13 @@ class Blog(models.Model):
 class Comment(models.Model):
     """Comment model showing the details of the comment"""
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
-    posted_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.TextField(max_length=200)
+    post_date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    description = models.TextField(max_length=200, help_text='Enter the comment about the blog')
 
     class Meta:
         """default ordering of the comment details"""
-        ordering = ['-posted_at']
+        ordering = ['-post_date']
 
     def __str__(self):
         """returns string representation of the model"""

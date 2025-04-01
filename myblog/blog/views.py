@@ -26,7 +26,6 @@ def index(request):
 class BlogListView(ListView):
     """View to display blogs"""
     model = Blog
-    template_name = 'blog/blog_list.html'
     context_object_name = 'blogs'
     paginate_by = 5
 
@@ -36,18 +35,25 @@ class BlogDetailView(DetailView):
     model = Blog
 
 
+class BlogListbyAuthorView(ListView):
+    """View to display blogs by author"""
+    model = Blog
+    template_name = 'blog/author_blogs.html'
+
+    def get_queryset(self):
+        return Blog.objects.filter(author=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['author'] = get_object_or_404(Author, pk=self.kwargs['pk'])
+        return context
+
+
 class AuthorListView(ListView):
     """View to display authors"""
     model = Author
-    paginate_by = 5
     context_object_name = 'authors'
-
-
-class AuthorDetailsView(DetailView):
-    """View to display author details"""
-    model = Author
-
-# create a comments form to be viewed
+    paginate_by = 5
 
 
 class CommentCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
@@ -58,12 +64,14 @@ class CommentCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView)
     permission_denied_message = 'You must be logged in to add a comment.'
 
     def form_valid(self, form):
-        # Associate the comment with the blog
-        blog = get_object_or_404(Blog, pk=self.kwargs['pk'])
-        form.instance.blog = blog
-        # Associate the comment with the currently logged-in user (User instance)
+        """
+        Add author and associated blog to form data before setting it as valid (so it is saved to model)
+        """
+        # Add logged-in user as author of comment
         form.instance.author = self.request.user
-
+        # Associate comment with blog based on passed id
+        form.instance.blog = get_object_or_404(Blog, pk=self.kwargs['pk'])
+        # Call super-class form validation behavior
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -75,6 +83,8 @@ class CommentCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView)
         return context
 
 # create new blogs
+
+
 class BlogCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """View to create a new blog"""
     model = Blog
@@ -85,5 +95,6 @@ class BlogCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
     def get_success_url(self):
         return reverse('blog_detail', kwargs={'pk': self.object.pk})

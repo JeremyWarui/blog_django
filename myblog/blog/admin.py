@@ -4,15 +4,14 @@ from .models import Blog, Comment, Author
 
 # define the admin interface for the Author model
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'user_name')
-    list_filter = ('last_name',)
-    fields = ('first_name', 'last_name', 'user_name', 'bio')
+    list_display = ('name', 'bio')
+    fields = ('name', 'bio')
 
 
 class CommentsInline(admin.TabularInline):
     model = Comment
-    fields = ('blog', 'posted_at', 'author', 'description')
-    readonly_fields = ('posted_at',)
+    fields = ('blog', 'post_date', 'author', 'description')
+    readonly_fields = ('post_date',)
 
 
 class BlogAdmin(admin.ModelAdmin):
@@ -24,9 +23,9 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('blog', 'posted_at', 'author')
-    list_filter = ('posted_at',)
-    fields = ('blog', 'posted_at', 'author', 'description')
+    list_display = ('blog', 'post_date', 'author')
+    list_filter = ('post_date',)
+    fields = ('blog', 'post_date', 'author', 'description')
 
 # Register the models
 
